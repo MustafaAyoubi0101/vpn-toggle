@@ -1,0 +1,7 @@
+{
+  "tooltip.connected": "Proton VPN connected — click to disconnect",
+  "tooltip.disconnected": "Proton VPN disconnected — click to connect",
+  "tooltip.connecting": "Connecting Proton VPN…",
+  "tooltip.disconnecting": "Disconnecting Proton VPN…",
+  "tooltip.busy": "Proton VPN is busy…"
+}

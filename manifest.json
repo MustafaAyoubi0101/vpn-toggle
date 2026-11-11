@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "id": "mustafa.protonvpn",
+  "name": "Proton VPN",
+  "version": "1.0.0",
+  "author": "mustafa",
+  "license": "MIT",
+  "description": "Toggle Proton VPN connect and disconnect from the Omarchy top bar.",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "ProtonVpn.qml"
+  },
+  "barWidget": {
+    "displayName": "Proton VPN",
+    "description": "Click to connect or disconnect Proton VPN",
+    "category": "Network",
+    "aliases": [
+      "proton",
+      "vpn",
+      "protonvpn"
+    ],
+    "allowMultiple": false,
+    "defaultSection": "right",
+    "defaults": {
+      "refreshIntervalSec": 5
+    },
+    "schema": [
+      {
+        "key": "refreshIntervalSec",
+        "type": "integer",
+        "label": "Refresh interval (seconds)",
+        "min": 2,
+        "max": 120,
+        "step": 1,
+        "defaultValue": 5
+      }
+    ]
+  }
+}
