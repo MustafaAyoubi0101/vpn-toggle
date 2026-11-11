@@ -15,7 +15,9 @@ BarWidget {
   property int _desired: -1
   property bool connected: false
   property string statusLabel: ""
+  property string statusText: ""
   property string lastError: ""
+  property bool _notifyOnStatus: false
 
   readonly property bool active: _desired === -1 ? connected : (_desired === 1)
   readonly property bool busy: statusProc.running || actionProc.running
@@ -41,6 +43,18 @@ BarWidget {
     if (!statusProc.running) statusProc.running = true
   }
 
+  function showStatus() {
+    root._notifyOnStatus = true
+    root.refresh()
+  }
+
+  function notifyStatus() {
+    var body = root.statusText !== ""
+      ? root.statusText
+      : (root.lastError !== "" ? root.lastError : strings.t("status.disconnected"))
+    Quickshell.execDetached(["notify-send", "-a", "Proton VPN", "Proton VPN", body])
+  }
+
   function toggle() {
     if (actionProc.running) return
     var next = !root.active
@@ -51,7 +65,8 @@ BarWidget {
   }
 
   function parseStatus(text) {
-    var out = String(text || "")
+    var out = String(text || "").replace(/\s+$/, "")
+    root.statusText = out
     var isConnected = /Status:\s*Connected/i.test(out)
     root.connected = isConnected
     if (isConnected) {
@@ -78,10 +93,16 @@ BarWidget {
     onExited: function(exitCode) {
       var stdout = String(statusStdout.text || "")
       var stderr = String(statusStderr.text || "")
-      if (exitCode === 0 || /Status:/i.test(stdout)) {
+      if (exitCode === 0 || /Status:/i.test(stdout) || stdout.trim() !== "") {
         root.parseStatus(stdout)
+        root.lastError = ""
       } else if (stderr !== "") {
-        root.lastError = stderr.split("\n")[0]
+        root.statusText = ""
+        root.lastError = stderr.replace(/\s+$/, "")
+      }
+      if (root._notifyOnStatus) {
+        root._notifyOnStatus = false
+        root.notifyStatus()
       }
     }
   }
@@ -136,9 +157,13 @@ BarWidget {
     useActiveColor: false
     dimmed: !root.active
     tooltipText: root.tooltip
-    onPressed: function(b) {
-      if (b === Qt.RightButton) root.refresh()
-      else root.toggle()
+    onPressed: function(button) {
+      if (button === Qt.RightButton) {
+        root.toggle()
+        return
+      }
+      if (button === Qt.LeftButton)
+        root.showStatus()
     }
   }
 }

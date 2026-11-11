@@ -14,7 +14,7 @@
   },
   "barWidget": {
     "displayName": "Proton VPN",
-    "description": "Click to connect or disconnect Proton VPN",
+    "description": "Click for Proton VPN status; right-click to connect or disconnect",
     "category": "Network",
     "aliases": [
       "proton",
